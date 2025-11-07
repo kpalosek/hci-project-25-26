@@ -18,7 +18,7 @@
 
 ### Semester Project
 
-- Link to your production version: [**Production Version**](URL_TO_PRODUCTION_VERSION) <!-- Replace with actual URL -->
+- Link to your production version: [**Production Version**](https://air2city.vercel.app/) <!-- Replace with actual URL -->
 - Link to your final report: [**Final Report**](URL_TO_FINAL_REPORT) <!-- Replace with actual URL -->
 <!-- Add more as necessary -->
 
@@ -26,6 +26,7 @@
 
 - Link to Assignment 1: [**Idea Pitch**](./assignments/assignment-1/)
 - Link to Assignment 2: [**User Personas & Information Architecture**](./assignments/assignment-2/)
+- Link to Assignment 3: [**Next.js - Deploying Application**](./assignments/assignment-3/)
 
 ## Project Requirements
 

@@ -27,6 +27,7 @@
 - Link to Assignment 1: [**Idea Pitch**](./assignments/assignment-1/)
 - Link to Assignment 2: [**User Personas & Information Architecture**](./assignments/assignment-2/)
 - Link to Assignment 3: [**Next.js - Deploying Application**](./assignments/assignment-3/)
+- Link to Assignment 4: [**Next.js - Low/High-fidelity prototype**](./assignments/assignment-4/)
 
 ## Project Requirements
 

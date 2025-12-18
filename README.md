@@ -28,6 +28,7 @@
 - Link to Assignment 2: [**User Personas & Information Architecture**](./assignments/assignment-2/)
 - Link to Assignment 3: [**Next.js - Deploying Application**](./assignments/assignment-3/)
 - Link to Assignment 4: [**Next.js - Low/High-fidelity prototype**](./assignments/assignment-4/)
+- Link to Assignment 5: [**Next.js - Next.js - Dynamic routes, data fetching**](./assignments/assignment-5/)
 
 ## Project Requirements
 

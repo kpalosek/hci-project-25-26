@@ -21,10 +21,6 @@ export default async function GuidePage({ params }: PageProps) {
 
   return (
     <div className="max-w-3xl mx-auto p-8">
-      {/* Breadcrumb za povratak */}
-      <Link href={`/guide/${airportCode}`} className="text-sm text-gray-500 hover:underline mb-4 block">
-        &larr; Back to {airport.name} options
-      </Link>
 
       {/* HEADER */}
       <div className="border-b pb-4 mb-6">

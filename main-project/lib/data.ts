@@ -4,6 +4,8 @@
 // 1. TIPOVI PODATAKA (Interfaces)
 // ==========================================
 
+export type TransportMode = 'Bus' | 'Train' | 'Taxi' | 'Subway' | 'Shuttle' | 'Uber';
+
 export interface Continent {
   slug: string;
   name: string;
@@ -39,6 +41,8 @@ export interface TransferGuide {
   duration: string;
   price: string;
   markdownContent: string;
+  transportMethods: TransportMode[];
+  isFeatured?: boolean;
 }
 
 // ==========================================
@@ -139,18 +143,22 @@ export const transferGuides: TransferGuide[] = [
     airportIata: 'ZAD',
     targetCitySlug: 'zadar',
     type: 'primary',
-    duration: '20 min',
-    price: '5 EUR',
-    markdownContent: 'Zadar Airport is very close to the city. Use the Liburnija bus line...'
+    duration: '20',
+    price: '5',
+    markdownContent: 'Zadar Airport is very close to the city. Use the Liburnija bus line...',
+    transportMethods: ['Bus', 'Taxi', 'Uber'],
+    isFeatured: false
   },
   {
     id: 'zad-split',
     airportIata: 'ZAD',
     targetCitySlug: 'split',
     type: 'nearby',
-    duration: '1h 45min',
-    price: '20 EUR',
-    markdownContent: 'Take the airport bus to Zadar main station, then switch to a bus for Split...'
+    duration: '105',
+    price: '20',
+    markdownContent: 'Take the airport bus to Zadar main station, then switch to a bus for Split...',
+    transportMethods: ['Bus', 'Taxi'],
+    isFeatured: false
   },
   // --- SPLIT ---
   {
@@ -158,9 +166,11 @@ export const transferGuides: TransferGuide[] = [
     airportIata: 'SPU',
     targetCitySlug: 'split',
     type: 'primary',
-    duration: '35 min',
-    price: '8 EUR',
-    markdownContent: 'Shuttle bus runs 30 minutes after every flight arrival...'
+    duration: '35',
+    price: '8',
+    markdownContent: 'Shuttle bus runs 30 minutes after every flight arrival...',
+    transportMethods: ['Bus', 'Taxi'],
+    isFeatured: true
   },
   // --- PARIS ---
   {
@@ -168,9 +178,11 @@ export const transferGuides: TransferGuide[] = [
     airportIata: 'CDG',
     targetCitySlug: 'paris',
     type: 'primary',
-    duration: '45 min',
-    price: '12 EUR',
-    markdownContent: 'RER B train is the fastest way to get to the city center...'
+    duration: '45',
+    price: '12',
+    markdownContent: 'RER B train is the fastest way to get to the city center...',
+    transportMethods: ['Bus', 'Taxi', 'Train'],
+    isFeatured: true
   },
   // --- NEW YORK (Placeholder) ---
   {
@@ -178,9 +190,11 @@ export const transferGuides: TransferGuide[] = [
     airportIata: 'JFK',
     targetCitySlug: 'new-york',
     type: 'primary',
-    duration: '50 min',
-    price: '10 USD',
-    markdownContent: 'Take the AirTrain to Jamaica Station, then the subway (E train) to Manhattan.'
+    duration: '50',
+    price: '10',
+    markdownContent: 'Take the AirTrain to Jamaica Station, then the subway (E train) to Manhattan.',
+    transportMethods: ['Taxi', 'Train', 'Subway'],
+    isFeatured: true
   }
 ];
 
@@ -220,4 +234,8 @@ export const getGuidesFromAirport = (airportIata: string) => {
 
 export const getSpecificGuide = (airportIata: string, citySlug: string) => {
   return transferGuides.find(g => g.airportIata === airportIata && g.targetCitySlug === citySlug);
+};
+
+export const getFeaturedGuides = () => {
+  return transferGuides.filter(g => g.isFeatured);
 };

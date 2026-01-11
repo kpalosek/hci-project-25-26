@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { City, TransferGuide, getAirport } from '@/lib/data';
+import { City, TransferGuide, countries } from '@/lib/data';
+import GuideCard from "@/components/cards/GuideCard";
 
 interface Props {
   city: City;
@@ -7,33 +8,72 @@ interface Props {
 }
 
 export default function CityView({ city, guides }: Props) {
+  
+  // 1. Pronađi državu da bi saznao kontinent (za Back link)
+  const parentCountryObj = countries.find(c => c.slug === city.parentCountry);
+  const continentSlug = parentCountryObj?.parentContinent;
+
+  // 2. FILTRIRANJE: Razdvoji vodiče na primarne i nearby
+  const primaryGuides = guides.filter(g => g.type === 'primary');
+  const nearbyGuides = guides.filter(g => g.type === 'nearby');
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Transport to {city.name}</h1>
+    <div className="max-w-7xl mx-auto p-8">
       
-      {guides.length === 0 ? <p>No guides available.</p> : (
-        <div className="grid gap-4">
-          {guides.map((guide) => {
-            // Trebamo ime aerodroma za prikaz
-            const airport = getAirport(guide.airportIata);
-            
-            return (
-              <div key={guide.id} className="border p-4 rounded">
-                <h3 className="font-bold">From: {airport?.name} ({guide.airportIata})</h3>
-                <p className="text-sm text-gray-600">
-                  Type: {guide.type} | Price: {guide.price} | Duration: {guide.duration}
-                </p>
-                <Link 
-                  href={`/guide/${guide.airportIata}/${guide.targetCitySlug}`}
-                  className="inline-block mt-2 bg-blue-600 text-white px-4 py-2 rounded"
-                >
-                  View Guide
-                </Link>
-              </div>
-            );
-          })}
+      {/* HEADER & NAVIGACIJA */}
+      <div className="mb-10">
+        <Link 
+          href={continentSlug ? `/explore/${continentSlug}/${city.parentCountry}` : '/explore'}
+          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-3 inline-block transition-colors"
+        >
+          &larr; Back to {parentCountryObj?.name || 'Country'}
+        </Link>
+        
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          Find transfer options to {city.name}
+        </h1>
+        <p className="text-xl text-gray-600">
+          Select your airport of arrival and find out the best way to get to city of {city.name}.
+        </p>
+      </div>
+      
+      {/* 3. LOGIKA PRIKAZA: Ako nema niti jednog vodiča */}
+      {guides.length === 0 && (
+        <div className="p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center text-gray-500">
+          No transfer guides available for {city.name} yet.
         </div>
       )}
+
+      {/* --- SEKCIJA 1: PRIMARY AIRPORTS (Gornji red) --- */}
+      {primaryGuides.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            Primary Airports
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {primaryGuides.map((guide) => (
+              <GuideCard key={guide.id} guide={guide} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* --- SEKCIJA 2: NEARBY AIRPORTS (Donji red) --- */}
+      {nearbyGuides.length > 0 && (
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            Nearby Airports
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {nearbyGuides.map((guide) => (
+              <GuideCard key={guide.id} guide={guide} />
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

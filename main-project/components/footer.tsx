@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -6,16 +9,16 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white text-sm">A2C</span>
-              </div>
-              <span className="text-white">air2city</span>
-            </div>
-            <p className="text-gray-400 text-sm">
-              Connecting airports to city centers worldwide
-            </p>
+          <div className="shrink-0 flex items-center self-center"> {/* Dodan 'self-center' */}
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/air2city_logo_v2.png"
+                alt="air2city logo"
+                width={80} 
+                height={80}
+                priority
+              />
+            </Link>
           </div>
 
           {/* Quick Links */}

@@ -1,23 +1,29 @@
 import Link from 'next/link';
-import { City, TransferGuide, countries } from '@/lib/data';
+import { Airport, TransferGuide, cities, countries } from '@/lib/data';
 import GuideCard from "@/components/cards/GuideCard";
 
 interface Props {
-  city: City;
+  airport: Airport;
   guides: TransferGuide[];
 }
 
-export default function CityView({ city, guides }: Props) {
+export default function AirportView({ airport, guides }: Props) {
   
-  const parentCountryObj = countries.find(c => c.slug === city.parentCountry);
+  // 1. Dohvaćamo "Matični grad" aerodroma da složimo Breadcrumbs i logiku
+  const locationCity = cities.find(c => c.slug === airport.locationCitySlug);
+  
+  // Dohvaćamo državu radi breadcrumb navigacije
+  const parentCountryObj = countries.find(c => c.slug === locationCity?.parentCountry);
   const continentSlug = parentCountryObj?.parentContinent;
 
-  const primaryGuides = guides.filter(g => g.type === 'primary');
-  const nearbyGuides = guides.filter(g => g.type === 'nearby');
+  // 2. FILTRIRANJE:
+  // Primary = Vodiči koji voze u grad gdje se aerodrom nalazi (npr. ZAD -> Zadar)
+  const primaryGuides = guides.filter(g => g.targetCitySlug === airport.locationCitySlug);
+  
+  // Nearby = Vodiči koji voze u druge gradove (npr. ZAD -> Split)
+  const nearbyGuides = guides.filter(g => g.targetCitySlug !== airport.locationCitySlug);
 
-  // OVO JE TAJNA FUNKCIJA:
-  // Umjesto da dvaput pišemo kod, napravili smo malu komponentu samo za listu
-  // koja se prilagođava ekranu (Mobile: Scroll, Desktop: Grid)
+  // 3. RESPONSIVE GRID (Isto kao u CityView: Scroll na mobitelu, Grid na desktopu)
   const ResponsiveGrid = ({ items }: { items: TransferGuide[] }) => (
     <div className="
       flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 scrollbar-hide
@@ -26,69 +32,65 @@ export default function CityView({ city, guides }: Props) {
       {items.map((guide) => (
         <div 
           key={guide.id} 
-          className="
-            /* MOBILE KARTICA: Fiksna širina da se može skrolati */
-            min-w-[85vw] sm:min-w-[300px] snap-center 
-            
-            /* DESKTOP KARTICA: Resetiramo širinu da grid preuzme */
-            md:min-w-0
-          "
+          className="min-w-[85vw] sm:min-w-[300px] snap-center md:min-w-0"
         >
-          <GuideCard guide={guide} variant="airport" />
+          {/* VAŽNO: Ovdje koristimo variant="city" (default).
+             Budući da smo na aerodromu, želimo vidjeti slike DESTINACIJA (gradova).
+          */}
+          <GuideCard guide={guide} variant="city" />
         </div>
       ))}
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8"> {/* Smanjio padding na mobitelu */}
+    <div className="max-w-7xl mx-auto p-4 md:p-8">
       
       {/* HEADER */}
       <div className="mb-8">
         <Link 
-          href={continentSlug ? `/explore/${continentSlug}/${city.parentCountry}` : '/explore'}
+          href={continentSlug && parentCountryObj ? `/explore/${continentSlug}/${parentCountryObj.slug}` : '/explore'}
           className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-3 inline-block transition-colors"
         >
           &larr; Back to {parentCountryObj?.name || 'Country'}
         </Link>
         
         <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
-          Transport to {city.name}
+          Transfers from {airport.name} ({airport.iata})
         </h1>
         <p className="text-lg text-gray-600">
-          Compare airport transfers and routes.
+          Find the best ways to reach {locationCity?.name} or nearby destinations.
         </p>
       </div>
       
       {/* EMPTY STATE */}
       {guides.length === 0 && (
         <div className="p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center text-gray-500">
-          No transfer guides available yet.
+          No transfer routes found from this airport.
         </div>
       )}
 
-      {/* --- PRIMARY AIRPORTS --- */}
+      {/* --- SECTION 1: CITY CENTER TRANSFER (Primary) --- */}
       {primaryGuides.length > 0 && (
         <div className="mb-10">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            Primary Airports
+            To {locationCity?.name} City Center
             <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              Closest & Fastest
+              Local Transfer
             </span>
           </h2>
           
-          {/* Koristimo našu pametnu listu */}
           <ResponsiveGrid items={primaryGuides} />
         </div>
       )}
 
-      {/* --- NEARBY AIRPORTS --- */}
+      {/* --- SECTION 2: NEARBY CITIES (Intercity) --- */}
       {nearbyGuides.length > 0 && (
         <div>
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            Alternative Airports
+            To Nearby Cities
             <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              Often Cheaper
+              Day Trips & Connections
             </span>
           </h2>
           

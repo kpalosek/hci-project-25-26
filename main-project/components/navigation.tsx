@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -35,7 +36,10 @@ function processPage(page: Page, index: number, currentPath?: string, onClick?: 
       ? currentPath === page.path
       : currentPath?.startsWith(page.path);
 
-  const baseClasses = `px-4 py-2 rounded-lg transition-all uppercase tracking-wide`;
+  const isMobile = typeof onClick === "function";
+  const baseClasses = isMobile
+    ? `block w-full px-4 py-3 rounded-lg transition-all uppercase tracking-wide text-left`
+    : `px-4 py-2 rounded-lg transition-all uppercase tracking-wide`;
   const underline = isActive && page.path !== "/account" ? `underline decoration-1 underline-offset-2 md:no-underline` : ``;
   const activeBg = isActive
     ? `md:font-bold md:bg-white/10`
@@ -59,12 +63,15 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="shrink-0">
-            <Link href="/" className="text-white flex items-center gap-2">
-              <div className="w-8 h-8 bg-linear-to-br from-orange-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-                <span className="text-white text-sm">A2C</span>
-              </div>
-              <span>air2city</span>
+          <div className="shrink-0 flex items-center self-center"> {/* Dodan 'self-center' */}
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/air2city_logo_v2.png"
+                alt="air2city logo"
+                width={80} 
+                height={80}
+                priority
+              />
             </Link>
           </div>
 
@@ -105,14 +112,14 @@ export default function Navigation() {
         {open && (
           <div className="md:hidden py-4 border-t border-white/10">
             <nav className="flex flex-col space-y-4">
-              <ul className="flex flex-col space-y-8 list-none">
+              <ul className="flex flex-col space-y-6 list-none">
               {pages
                 .filter((p) => p.path !== "/account")
                 .map((page, index) => processPage(page, index, currentPath, () => setOpen(false)))}
             </ul>
 
               <div className="flex flex-col gap-2 pt-2">
-                <Link href={pages.find((p) => p.path === "/account")?.path || "/account"} onClick={() => setOpen(false)} className="px-4 py-2 bg-white/15 text-white rounded-lg hover:bg-white/25 transition-colors text-center border border-white/20 uppercase tracking-wide">
+                <Link href={pages.find((p) => p.path === "/account")?.path || "/account"} onClick={() => setOpen(false)} className="block w-full px-4 py-3 bg-white/15 text-white rounded-lg hover:bg-white/25 transition-colors text-left border border-white/20 uppercase tracking-wide">
                   ACCOUNT
                 </Link>
               </div>

@@ -60,7 +60,6 @@ export default function GuideCard({ guide, variant = 'city' }: Props) {
 
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-gray-100 flex items-center gap-2 z-10">
           <div className="flex flex-col items-end leading-none">
-            <span className="text-[9px] text-gray-500 font-semibold uppercase tracking-wider">FROM</span>
             <span className="text-sm font-extrabold text-gray-900 leading-none">{guide.airportIata}</span>
           </div>
         </div>

@@ -47,10 +47,10 @@ export default function FeaturedCarousel({ guides }: Props) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
-            Trending Guides
+            Featured Guides
           </h2>
           <p className="text-gray-500 mt-1 text-sm md:text-base">
-            Most popular transfer routes
+            Check out some of the favourite guides from our community and find inspiration for your next trip!
           </p>
         </div>
 

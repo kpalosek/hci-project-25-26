@@ -35,10 +35,43 @@ export default function GuideCard({ guide, variant = 'city' }: Props) {
   // 2. Izvuci jedinstvene tipove (npr. ['bus', 'train'])
   const distinctModes = Array.from(new Set(options.map(o => o.type)));
 
-  // 3. Izvuci najnižu cijenu i najkraće trajanje za prikaz na kartici
-  // (Ovo je opcionalno poboljšanje, možeš zadržati i stare stringove ako ih imaš)
-  const displayDuration = options[0]?.duration ||  "N/A";
-  const displayPrice = options[0]?.price ||  "N/A";
+  // --- LOGIKA ZA TRAŽENJE MINIMUMA  ---
+
+  // 1. Helperi za pretvaranje stringa u broj (npr. "€15" -> 15)
+  const getPriceValue = (priceStr: string) => {
+    if (!priceStr) return Infinity;
+    const num = parseFloat(priceStr.replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? Infinity : num;
+  };
+
+  const getDurationValue = (durationStr: string) => {
+    if (!durationStr) return Infinity;
+    const num = parseInt(durationStr.replace(/\D/g, ''));
+    return isNaN(num) ? Infinity : num;
+  };
+
+  // 2. Pronađi najjeftiniju i najbržu opciju
+  // Koristimo .reduce() samo ako imamo opcija
+  const cheapestOption = options.length > 0 
+    ? options.reduce((min, current) => 
+        getPriceValue(current.price) < getPriceValue(min.price) ? current : min
+      ) 
+    : null;
+
+  const fastestOption = options.length > 0 
+    ? options.reduce((min, current) => 
+        getDurationValue(current.duration) < getDurationValue(min.duration) ? current : min
+      ) 
+    : null;
+
+  // 3. Postavi varijable za prikaz
+  const displayPrice = cheapestOption 
+    ? `from ${cheapestOption.price}` 
+    : "N/A";
+
+    const displayDuration = fastestOption 
+    ? `from ${fastestOption.duration}` 
+    : "N/A";
 
   return (
     <Link 

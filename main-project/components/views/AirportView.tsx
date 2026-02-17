@@ -1,6 +1,18 @@
 import Link from 'next/link';
-import { Airport, TransferGuide, cities, countries } from '@/lib/data';
+import { TransferGuide } from '@/lib/data'; 
 import GuideCard from "@/components/cards/GuideCard";
+
+interface Airport {
+  id: string;
+  name: string;
+  iata: string;
+  image?: string;
+  locationCitySlug?: string;
+  locationCityName?: string;
+  countrySlug?: string;
+  countryName?: string;
+  continentSlug?: string;
+}
 
 interface Props {
   airport: Airport;
@@ -8,22 +20,15 @@ interface Props {
 }
 
 export default function AirportView({ airport, guides }: Props) {
-  
-  // 1. Dohvaćamo "Matični grad" aerodroma da složimo Breadcrumbs i logiku
-  const locationCity = cities.find(c => c.slug === airport.locationCitySlug);
-  
-  // Dohvaćamo državu radi breadcrumb navigacije
-  const parentCountryObj = countries.find(c => c.slug === locationCity?.parentCountry);
-  const continentSlug = parentCountryObj?.parentContinent;
 
-  // 2. FILTRIRANJE:
-  // Primary = Vodiči koji voze u grad gdje se aerodrom nalazi (npr. ZAD -> Zadar)
+  const continentSlug = airport.continentSlug || 'europe';
+  const countrySlug = airport.countrySlug;
+  const countryName = airport.countryName || 'Country';
+  const cityName = airport.locationCityName || 'City Center';
+
   const primaryGuides = guides.filter(g => g.targetCitySlug === airport.locationCitySlug);
-  
-  // Nearby = Vodiči koji voze u druge gradove (npr. ZAD -> Split)
   const nearbyGuides = guides.filter(g => g.targetCitySlug !== airport.locationCitySlug);
 
-  // 3. RESPONSIVE GRID (Isto kao u CityView: Scroll na mobitelu, Grid na desktopu)
   const ResponsiveGrid = ({ items }: { items: TransferGuide[] }) => (
     <div className="
       flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 scrollbar-hide
@@ -34,9 +39,6 @@ export default function AirportView({ airport, guides }: Props) {
           key={guide.id} 
           className="min-w-[85vw] sm:min-w-[300px] snap-center md:min-w-0"
         >
-          {/* VAŽNO: Ovdje koristimo variant="city" (default).
-             Budući da smo na aerodromu, želimo vidjeti slike DESTINACIJA (gradova).
-          */}
           <GuideCard guide={guide} variant="city" />
         </div>
       ))}
@@ -44,41 +46,44 @@ export default function AirportView({ airport, guides }: Props) {
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 md:p-12">
       
       {/* HEADER */}
-      <div className="mb-8">
+      <div className="mb-10">
         <Link 
-          href={continentSlug && parentCountryObj ? `/explore/${continentSlug}/${parentCountryObj.slug}` : '/explore'}
-          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-3 inline-block transition-colors"
+          // Link na Explore stranicu države
+          href={`/explore/${continentSlug}/${countrySlug}`}
+          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-4 inline-flex items-center transition-colors"
         >
-          &larr; Back to {parentCountryObj?.name || 'Country'}
+          &larr; Back to {countryName}
         </Link>
         
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
           Transfers from {airport.name} ({airport.iata})
         </h1>
-        <p className="text-lg text-gray-600">
-          Find the best ways to reach {locationCity?.name} or nearby destinations.
+        <p className="text-lg text-gray-600 max-w-2xl">
+          Find the best ways to reach {cityName} or nearby destinations directly from the airport.
         </p>
       </div>
       
       {/* EMPTY STATE */}
       {guides.length === 0 && (
-        <div className="p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center text-gray-500">
-          No transfer routes found from this airport.
+        <div className="py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-center">
+          <p className="text-gray-500 text-lg">No transfer routes found from this airport yet.</p>
         </div>
       )}
 
       {/* --- SECTION 1: CITY CENTER TRANSFER (Primary) --- */}
       {primaryGuides.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            To {locationCity?.name} City Center
-            <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              Local Transfer
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              To {cityName} City Center
+            </h2>
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              Most Popular
             </span>
-          </h2>
+          </div>
           
           <ResponsiveGrid items={primaryGuides} />
         </div>
@@ -87,12 +92,14 @@ export default function AirportView({ airport, guides }: Props) {
       {/* --- SECTION 2: NEARBY CITIES (Intercity) --- */}
       {nearbyGuides.length > 0 && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            To Nearby Cities
-            <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              Day Trips & Connections
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              To Nearby Cities
+            </h2>
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              Connections
             </span>
-          </h2>
+          </div>
           
           <ResponsiveGrid items={nearbyGuides} />
         </div>

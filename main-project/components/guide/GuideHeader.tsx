@@ -29,8 +29,8 @@ export default function GuideHeader({
   minTime,
   minPrice,
 }: Props) {
-  
-  // Konstrukcija linka za grad (osiguravamo da ne pukne ako fali podataka)
+
+  // Konstrukcija linka za grad
   const cityUrl = (continentSlug && countrySlug && citySlug) 
     ? `/explore/${continentSlug}/${countrySlug}/${citySlug}`
     : "#";
@@ -61,7 +61,7 @@ export default function GuideHeader({
 
             {/* BADGE (Lijevi) - Link na Airport Overview */}
             <Link
-              href={`/guide/${airportIata}`} // <-- POPRAVLJEN LINK
+              href={`/guide/${airportIata}`}
               className="absolute top-6 left-4 md:top-8 md:left-8 z-20 group"
             >
               <div className="bg-black/50 backdrop-blur-md text-white px-4 py-2 md:px-6 md:py-3 rounded-2xl shadow-sm transition-all group-hover:bg-black/70 group-hover:scale-105 border border-white/10 ml-auto inline-block">

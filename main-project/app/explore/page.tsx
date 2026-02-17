@@ -1,22 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { getAllContinents } from "@/lib/data";
+import Image from "next/image";
+import { getAllContinents } from "@/lib/contentful";
 
-export default function ExplorePage() {
-  const continents = getAllContinents();
+export const metadata: Metadata = {
+  title: "Explore",
+  description: "Browse all countries and airports...",
+};
+
+export default async function ExplorePage() {
+  const continents = await getAllContinents();
 
   return (
-    <div className="max-w-7xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto px-4 py-12 md:px-8">
+      
       {/* HEADER SEKCIJA */}
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">
           Explore by Continent
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Select a region to find detailed airport transfer guides and travel tips.
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          Select a region to find detailed airport transfer guides, transport options, and travel tips.
         </p>
       </div>
 
-      {/* GRID KARTICA (3 stupca) */}
+      {/* GRID KARTICA */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {continents.map((c) => (
           <Link 
@@ -24,37 +32,43 @@ export default function ExplorePage() {
             href={`/explore/${c.slug}`} 
             className="group block h-full"
           >
-            <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden h-full flex flex-col border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden h-full flex flex-col border border-gray-100">
               
-              {/* SLIKA KARTICE */}
-              <div className="relative h-56 overflow-hidden">
-                <img 
-                  src={c.image} 
-                  alt={c.name}
-                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                />
-                {/* Overlay gradient da tekst bude čitljiviji ako ga staviš preko slike */}
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+              <div className="relative h-64 w-full bg-gray-200 overflow-hidden">
+                {c.image ? (
+                  <Image
+                    src={c.image}
+                    alt={c.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-4xl bg-gray-100 text-gray-300">
+                    🌍
+                  </div>
+                )}
+                
+                <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
               </div>
 
-              {/* SADRŽAJ KARTICE */}
-              <div className="p-6 flex-1 flex flex-col">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+              
+              <div className="p-8 flex-1 flex flex-col">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 transition-colors">
                     {c.name}
                   </h2>
-                  <span className="text-blue-500 bg-blue-50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-2 group-hover:translate-x-0">
-                    ➝
+                  
+                  
+                  <span className="text-black-600 bg-blue-50 px-3 py-1 rounded-full text-sm font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                    View Countries &rarr;
                   </span>
                 </div>
                 
-                <p className="text-gray-600 leading-relaxed mb-4 flex-1">
+                <p className="text-gray-600 leading-relaxed flex-1 line-clamp-3">
                   {c.description}
                 </p>
                 
-                <div className="text-sm font-semibold text-blue-600 mt-auto">
-                  View Countries &rarr;
-                </div>
               </div>
 
             </div>

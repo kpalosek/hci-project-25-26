@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'upload.wikimedia.org', // Za slike aerodroma
       },
+      {
+        protocol: 'https',
+        hostname: 'images.ctfassets.net', // Ovo je Contentful domena
+        port: '',
+      },
     ],
   },
 };

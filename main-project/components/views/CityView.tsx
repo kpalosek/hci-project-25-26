@@ -1,6 +1,16 @@
 import Link from 'next/link';
-import { City, TransferGuide, countries } from '@/lib/data';
+import { TransferGuide } from '@/lib/data'; 
 import GuideCard from "@/components/cards/GuideCard";
+
+interface City {
+  id: string;
+  name: string;
+  slug: string;
+  image?: string;
+  parentCountry?: string;
+  countryName?: string;
+  continentSlug?: string;
+}
 
 interface Props {
   city: City;
@@ -8,16 +18,12 @@ interface Props {
 }
 
 export default function CityView({ city, guides }: Props) {
-  
-  const parentCountryObj = countries.find(c => c.slug === city.parentCountry);
-  const continentSlug = parentCountryObj?.parentContinent;
+  const continentSlug = city.continentSlug || 'europe';
+  const countryName = city.countryName || city.parentCountry;
 
   const primaryGuides = guides.filter(g => g.type === 'primary');
   const nearbyGuides = guides.filter(g => g.type === 'nearby');
 
-  // OVO JE TAJNA FUNKCIJA:
-  // Umjesto da dvaput pišemo kod, napravili smo malu komponentu samo za listu
-  // koja se prilagođava ekranu (Mobile: Scroll, Desktop: Grid)
   const ResponsiveGrid = ({ items }: { items: TransferGuide[] }) => (
     <div className="
       flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 scrollbar-hide
@@ -26,58 +32,86 @@ export default function CityView({ city, guides }: Props) {
       {items.map((guide) => (
         <div 
           key={guide.id} 
-          className="
-            /* MOBILE KARTICA: Fiksna širina da se može skrolati */
-            min-w-[85vw] sm:min-w-[300px] snap-center 
-            
-            /* DESKTOP KARTICA: Resetiramo širinu da grid preuzme */
-            md:min-w-0
-          "
+          className="min-w-[85vw] sm:min-w-[300px] snap-center md:min-w-0"
         >
-          <GuideCard guide={guide} variant="airport" />
+
+          <GuideCard guide={guide} variant="city" />
         </div>
       ))}
     </div>
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8"> {/* Smanjio padding na mobitelu */}
+    <div className="max-w-7xl mx-auto px-4 py-8 md:p-12">
       
-      {/* HEADER */}
-      <div className="mb-8">
-        <Link 
-          href={continentSlug ? `/explore/${continentSlug}/${city.parentCountry}` : '/explore'}
-          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-3 inline-block transition-colors"
-        >
-          &larr; Back to {parentCountryObj?.name || 'Country'}
-        </Link>
+      {/* HEADER & BREADCRUMBS */}
+      <div className="mb-10">
+        <nav className="flex items-center flex-wrap text-sm text-gray-500 mb-6 font-medium">
+          
+          {/* 1. WORLD */}
+          <Link 
+            href="/explore" 
+            className="hover:text-blue-600 transition-colors"
+          >
+            World
+          </Link>
+
+          <span className="mx-2 text-gray-300">/</span>
+
+          {/* 2. CONTINENT */}
+          <Link 
+            href={`/explore/${continentSlug}`}
+            className="hover:text-blue-600 transition-colors capitalize"
+          >
+            {continentSlug || 'Continent'}
+          </Link>
+
+          <span className="mx-2 text-gray-300">/</span>
+
+          {/* 3. COUNTRY */}
+          <Link 
+            href={`/explore/${continentSlug}/${city.parentCountry}`}
+            className="hover:text-blue-600 transition-colors"
+          >
+            {countryName}
+          </Link>
+
+          <span className="mx-2 text-gray-300">/</span>
+
+          {/* 4. CURRENT CITY */}
+          <span className="text-gray-900 font-semibold">
+            {city.name}
+          </span>
+
+        </nav>
         
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
           Transport to {city.name}
         </h1>
-        <p className="text-lg text-gray-600">
-          Compare airport transfers and routes.
+        <p className="text-lg text-gray-600 max-w-2xl">
+          Find the best ways to get to {city.name} from nearby airports. Compare prices, duration and transport types.
         </p>
       </div>
       
       {/* EMPTY STATE */}
       {guides.length === 0 && (
-        <div className="p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 text-center text-gray-500">
-          No transfer guides available yet.
+        <div className="py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-center">
+          <p className="text-gray-500 text-lg">We are currently adding transfer guides for {city.name}.</p>
         </div>
       )}
 
       {/* --- PRIMARY AIRPORTS --- */}
       {primaryGuides.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            Primary Airports
-            <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Primary Airports
+            </h2>
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               Closest & Fastest
             </span>
-          </h2>
+          </div>
           
-          {/* Koristimo našu pametnu listu */}
           <ResponsiveGrid items={primaryGuides} />
         </div>
       )}
@@ -85,12 +119,14 @@ export default function CityView({ city, guides }: Props) {
       {/* --- NEARBY AIRPORTS --- */}
       {nearbyGuides.length > 0 && (
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2">
-            Alternative Airports
-            <span className="hidden sm:inline-block text-xs font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+          <div className="flex items-center gap-3 mb-6">
+             <h2 className="text-2xl font-bold text-gray-900">
+              Alternative Airports
+            </h2>
+            <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
               Often Cheaper
             </span>
-          </h2>
+          </div>
           
           <ResponsiveGrid items={nearbyGuides} />
         </div>

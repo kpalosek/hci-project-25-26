@@ -42,13 +42,11 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
   const updates = getUpdatesByAirport(airportIata);
 
   return (
-    // Dodan 'w-full' i 'overflow-hidden' na glavni wrapper za svaki slučaj
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-30 pb-20 w-full">
       
       <div className="grid lg:grid-cols-3 gap-8">
         
         {/* --- LIJEVI STUPAC (Glavni sadržaj) --- */}
-        {/* POPRAVAK: Dodan 'min-w-0' i 'w-full'. Ovo sprječava horizontalno scrollanje cijele stranice */}
         <div className="lg:col-span-2 flex flex-col gap-6 min-w-0 w-full">
           
           {/* TAB NAVIGACIJA */}

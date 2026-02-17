@@ -54,6 +54,18 @@ export const recentUpdates: TransportUpdate[] = [
     content: "Terminal 1 AirTrain is down for maintenance. Use the shuttle bus provided at level 1.",
     date: "2024-05-22T09:00:00Z",
     transportType: "train",
+  },
+  {
+    id: "4",
+    airportIata: "KEF",
+    user: {
+      name: "Šimun V.",
+      role: "driver",
+    },
+    title: "Nema mi biciklo",
+    content: "Nemogu da dođem nema biciklo.",
+    date: "2024-05-22T09:00:00Z",
+    transportType: "bus",
   }
 ];
 

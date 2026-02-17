@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function FeaturedCarousel({ guides }: Props) {
-  // --- LOGIKA ZA DESKTOP (Paginacija) ---
+  // Paginacija
   const [startIndex, setStartIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const itemsPerPage = 4;
@@ -54,7 +54,6 @@ export default function FeaturedCarousel({ guides }: Props) {
           </p>
         </div>
 
-        {/* GUMBI (Sakrij na mobitelu jer se tamo skrola prstom) */}
         <div className="hidden md:flex gap-2">
           <button
             onClick={prevBatch}
@@ -82,10 +81,6 @@ export default function FeaturedCarousel({ guides }: Props) {
         </div>
       </div>
 
-      {/* --- 1. MOBILE VIEW (Horizontal Scroll) --- 
-          Prikazuje se samo na manjim ekranima (md:hidden).
-          Prikazuje SVE vodiče odjednom u nizu koji se skrola.
-      */}
       <div className="md:hidden flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory -mx-4 px-4 scrollbar-hide">
         {guides.map((guide) => (
           <div 
@@ -96,11 +91,7 @@ export default function FeaturedCarousel({ guides }: Props) {
           </div>
         ))}
       </div>
-
-      {/* --- 2. DESKTOP VIEW (Grid + Animation) --- 
-          Prikazuje se samo na većim ekranima (hidden md:block).
-          Prikazuje samo 4 vodiča i koristi animacije.
-      */}
+  
       <div className="hidden md:block overflow-hidden min-h-[300px]"> 
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div

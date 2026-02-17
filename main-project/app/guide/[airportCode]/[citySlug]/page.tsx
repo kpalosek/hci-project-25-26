@@ -1,88 +1,104 @@
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAirport, getGuideByAirportAndCity, cities, countries } from "@/lib/data";
+import { getTransferGuideFromCMS } from "@/lib/contentful"; 
 import { getUpdatesByAirport } from "@/lib/updates";
 import GuideHeader from "@/components/guide/GuideHeader";
 import TransportTabs from "@/components/guide/TransportTabs";
 
 interface Props {
-  // U novijim verzijama Next.js params su Promise
   params: Promise<{ airportCode: string; citySlug: string }>;
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { airportCode, citySlug } = await params;
+  
+  const guide = await getTransferGuideFromCMS(airportCode, citySlug);
+
+  if (!guide) {
+    return {
+      title: "Transfer Guide Not Found",
+    };
+  }
+
+  const getPriceValue = (p: string) => parseFloat(p.replace(/[^0-9.]/g, '')) || Infinity;
+  
+  const cheapest = guide.transportOptions.reduce((min, curr) => 
+    getPriceValue(curr.price) < getPriceValue(min.price) ? curr : min
+  , guide.transportOptions[0]);
+
+  const priceString = cheapest?.price ? `from ${cheapest.price}` : 'cheaply';
+  const airport = guide.airportName || `${guide.airportIata} Airport`;
+  const city = guide.cityName || citySlug;
+
+  return {
+    title: `Transfer from ${airport} (${guide.airportIata}) to ${city} | Air2City`,
+    description: `Best ways to get from ${airport} to ${city}. Compare transport options, bus schedules and taxi prices starting ${priceString}. Distance: ${guide.distance}.`,
+    openGraph: {
+      title: `How to get from ${airport} to ${city}`,
+      description: `Cheapest transfer options starting ${priceString}.`,
+      images: guide.cityImage ? [guide.cityImage] : (guide.airportImage ? [guide.airportImage] : []),
+    },
+  };
+}
+
 export default async function GuidePage({ params }: Props) {
-  // 1. Pričekaj parametre
   const { airportCode, citySlug } = await params;
 
-  // 2. Dohvati osnovne podatke
-  const guide = getGuideByAirportAndCity(airportCode, citySlug);
-  const airport = getAirport(airportCode);
-  const city = cities.find((c) => c.slug === citySlug);
-  const updates = getUpdatesByAirport(airportCode);
+  // 1. DOHVAT IZ CMS-a
+  const guide = await getTransferGuideFromCMS(airportCode, citySlug);
 
-  // 3. Ako bilo koji podatak nedostaje, vrati 404
-  if (!guide || !airport || !city) {
+  if (!guide) {
     return notFound();
   }
 
-  // 4. Dohvati dodatne podatke za navigaciju (Država i Kontinent)
-  // Ovo je potrebno da bi linkovi u Headeru (npr. "To City") radili ispravno
-  const country = countries.find((c) => c.slug === city.parentCountry);
-  const continentSlug = country?.parentContinent;
+  const updates = getUpdatesByAirport(airportCode);
 
-  // --- LOGIKA ZA IZRAČUN NAJNIŽE CIJENE I VREMENA ---
-  
-  // Helper: Pretvori "€15.50" u 15.50
+  // Helperi za cijene i vrijeme
   const getPriceValue = (priceStr: string) => {
     if (!priceStr) return Infinity;
     const num = parseFloat(priceStr.replace(/[^0-9.]/g, ''));
     return isNaN(num) ? Infinity : num; 
   };
 
-  // Helper: Pretvori "45 min" u 45
   const getDurationValue = (durationStr: string) => {
     if (!durationStr) return Infinity;
     const num = parseInt(durationStr.replace(/\D/g, ''));
     return isNaN(num) ? Infinity : num;
   };
 
-  // Pronađi najjeftiniju opciju
   const cheapestOption = guide.transportOptions.reduce((min, current) => 
     getPriceValue(current.price) < getPriceValue(min.price) ? current : min
   , guide.transportOptions[0]);
 
-  // Pronađi najbržu opciju
   const fastestOption = guide.transportOptions.reduce((min, current) => 
     getDurationValue(current.duration) < getDurationValue(min.duration) ? current : min
   , guide.transportOptions[0]);
 
-  // Postavi vrijednosti za prikaz (koristimo originalne stringove)
-  const minPrice = cheapestOption?.price || "N/A";
-  const minTime = fastestOption?.duration || "N/A";
-
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
-      
-      {/* 1. HEADER SEKCIJA */}
+
       <GuideHeader 
-        airportName={airport.name}
-        airportIata={airport.iata}
-        airportImage={airport.image}
-        cityName={city.name}
-        citySlug={city.slug}
-        cityImage={city.image}
-        countrySlug={country?.slug || ""}
-        continentSlug={continentSlug || ""}
+        airportName={guide.airportName || `${guide.airportIata} Airport`}
+        airportIata={guide.airportIata}
+        airportImage={guide.airportImage}
+        
+        cityName={guide.cityName || guide.targetCitySlug}
+        citySlug={guide.targetCitySlug}
+        cityImage={guide.cityImage}
+        
+        countrySlug={guide.countrySlug || ""}
+        continentSlug={guide.continentSlug || ""}
+        
         distance={guide.distance}
-        minTime={minTime}
-        minPrice={minPrice}
+        minTime={fastestOption?.duration || "N/A"}
+        minPrice={cheapestOption?.price || "N/A"}
       />
 
-      {/* 2. GLAVNI SADRŽAJ (Tabovi) */}
       <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 lg:-mt-6">
         <TransportTabs 
-          airportName={airport.name}
-          airportIata={airport.iata}
-          cityName={city.name}
+          airportName={guide.airportName || guide.airportIata}
+          airportIata={guide.airportIata}
+          cityName={guide.cityName || guide.targetCitySlug}
           options={guide.transportOptions}
         />
       </div>

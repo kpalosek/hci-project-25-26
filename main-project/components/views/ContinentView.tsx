@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Continent, Country } from '@/lib/data';
 
 interface Props {
@@ -8,15 +9,27 @@ interface Props {
 
 export default function ContinentView({ continent, countries }: Props) {
   return (
-    <div className="max-w-7xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto px-4 py-12 md:px-8">
       {/* HEADER */}
       <div className="mb-10 text-center md:text-left">
-        <Link 
-          href="/explore" 
-          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-4 inline-block transition-colors"
-        >
-          &larr; Back to World Map
-        </Link>
+        <nav className="flex items-center text-sm text-gray-500 mb-6 font-medium">
+          
+          {/* 1. ROOT */}
+          <Link 
+            href="/explore" 
+            className="hover:text-blue-600 transition-colors"
+          >
+            World
+          </Link>
+
+          <span className="mx-2 text-gray-300">/</span>
+
+          {/* 2. CURRENT PAGE */}
+          <span className="text-gray-900 font-semibold capitalize">
+            {continent.slug}
+          </span>
+
+        </nav>
         
         <h1 className="text-4xl font-extrabold text-gray-900 mb-4">
           {continent.name}
@@ -39,45 +52,40 @@ export default function ContinentView({ continent, countries }: Props) {
               href={`/explore/${continent.slug}/${country.slug}`}
               className="group block h-full"
             >
-              <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 overflow-hidden h-full flex flex-col">
-                
-                {/* SLIKA DRŽAVE */}
-                <div className="relative h-48 overflow-hidden bg-gray-100">
+              <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden h-full flex flex-col border border-gray-100">
+                <div className="relative h-64 w-full bg-gray-200 overflow-hidden">
                   {country.image ? (
-                    <img 
-                      src={country.image} 
+                    <Image
+                      src={country.image}
                       alt={country.name}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
-                    // Fallback ako nema slike
-                    <div className="flex items-center justify-center h-full text-4xl bg-blue-50">🏳️</div>
+                    <div className="w-full h-full flex items-center justify-center text-4xl bg-gray-100 text-gray-300">
+                      🏳️
+                    </div>
                   )}
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+
+                  <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
                 </div>
 
-                {/* CONTENT */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+                  <div className="p-8 flex-1 flex flex-col">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-2xl font-bold text-gray-900 transition-colors">
                       {country.name}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      Explore popular cities and airport connections in {country.name}.
-                    </p>
-                  </div>
-                  
-                  <div className="mt-6 flex items-center justify-between">
-                    <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                      View Cities
-                    </span>
-                    <span className="text-gray-400 group-hover:translate-x-1 transition-transform">
-                      &rarr;
-                    </span>
-                  </div>
-                </div>
 
+                    <span className="text-black-600 bg-blue-50 px-3 py-1 rounded-full text-sm font-medium opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                      View Cities &rarr;
+                    </span>
+                  </div>
+
+                  <p className="text-gray-600 leading-relaxed flex-1 line-clamp-3">
+                    Explore popular cities and airport connections in {country.name}.
+                  </p>
+                </div>
               </div>
             </Link>
           ))}

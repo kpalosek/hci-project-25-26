@@ -412,3 +412,45 @@ export async function getSearchData() {
   
   return { cities, airports };
 }
+
+export async function getGuidesByFavorites(favoritesList: { airportIata: string, targetCitySlug: string }[]) {
+  if (!favoritesList || favoritesList.length === 0) return [];
+
+  const response = await client.getEntries({
+    content_type: 'transferGuide',
+    include: 2,
+  });
+
+  const filteredItems = response.items.filter((item: any) => {
+    const guideIata = item.fields.airport?.fields?.iata;
+    const guideSlug = item.fields.targetCity?.fields?.slug;
+    
+    // Check if the current Contentful item matches BOTH the IATA and the SLUG of any saved favorite
+    return favoritesList.some(fav => 
+      fav.airportIata === guideIata && fav.targetCitySlug === guideSlug
+    );
+  });
+
+  return filteredItems.map((item: any) => {
+    const fields = item.fields;
+    return {
+      id: fields.id,
+      airportIata: fields.airport?.fields?.iata,
+      targetCitySlug: fields.targetCity?.fields?.slug,
+      
+      type: fields.type || 'primary',
+      distance: fields.distance || 'N/A',
+
+      airportImage: getImageUrl(fields.airport?.fields?.image),
+      airportName: fields.airport?.fields?.name,
+      cityName: fields.targetCity?.fields?.name,
+      cityImage: getImageUrl(fields.targetCity?.fields?.image),
+
+      transportOptions: fields.transportOptions?.map((opt: any) => ({
+        type: opt.fields.type,
+        price: opt.fields.price,
+        duration: opt.fields.duration,
+      })) || [],
+    };
+  });
+}

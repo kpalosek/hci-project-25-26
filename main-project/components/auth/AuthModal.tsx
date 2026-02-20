@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Dodali smo useEffect
+import { useState, useEffect } from "react";
 import { X, Eye, EyeOff, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { signIn, signUp } from "@/lib/auth-client"; 
@@ -31,9 +31,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   useEffect(() => {
     if (!isOpen) {
+      // Kada se modal zatvori, resetiraj sve na početne postavke
       resetForm();
       setIsLogin(true);
       setShowPassword(false);
+      setLoading(false); // Za svaki slučaj resetiramo i loading stanje
     }
   }, [isOpen]);
 
@@ -41,6 +43,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Ako se već učitava, spriječi ponovno slanje
+    if (loading) return;
+    
     setLoading(true);
     setError("");
 
@@ -58,18 +64,26 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       if (isLogin) {
+        // --- LOGIKA ZA PRIJAVU (LOGIN) ---
         const { error } = await signIn.email({ email, password });
-        if (error) throw new Error(error.message || "Failed to sign in");
+        if (error) throw new Error(error.message || "Failed to sign in. Please check your credentials.");
+        
         onClose(); 
+        // OVO RJEŠAVA PROBLEM: Forsirani refresh kako bi Next.js povukao "Saved Guides"
+        window.location.reload(); 
+        
       } else {
+        // --- LOGIKA ZA REGISTRACIJU (SIGN UP) ---
         const { error } = await signUp.email({ email, password, name });
-        if (error) throw new Error(error.message || "Failed to sign up");
+        if (error) throw new Error(error.message || "Failed to sign up.");
+        
         onClose(); 
+        // OVO RJEŠAVA PROBLEM: Forsirani refresh nakon uspješne registracije
+        window.location.reload(); 
       }
     } catch (err: any) {
       setError(err.message);
-    } finally {
-      setLoading(false);
+      setLoading(false); // Gasimo loading samo ako dođe do greške (ako prođe, stranica se ionako refresha)
     }
   };
 
@@ -80,6 +94,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 z-10 p-2 bg-white/80 rounded-full hover:bg-gray-100 transition"
+          aria-label="Close modal"
         >
           <X className="w-5 h-5 text-gray-700" />
         </button>
@@ -141,6 +156,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -164,7 +180,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center disabled:opacity-70 mt-6"
+              className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed mt-6"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? "Sign In" : "Sign Up")}
             </button>
@@ -173,6 +189,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <div className="mt-6 text-center text-sm text-gray-600">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button 
+              type="button" // Spriječava da se ovo okine kao submit forme
               onClick={() => { 
                 setIsLogin(!isLogin); 
                 resetForm(); 

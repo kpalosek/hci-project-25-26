@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, LogOut } from "lucide-react";
 import AuthModal from "@/components/auth/AuthModal";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -16,7 +16,6 @@ type Page = {
 const pages: Page[] = [
   { title: "HOME", path: "/" },
   { title: "EXPLORE", path: "/explore" },
-  { title: "NEWS", path: "/news" },
   { title: "ABOUT", path: "/about" },
 ];
 
@@ -50,8 +49,16 @@ export default function Navigation() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { data: session, isPending } = useSession();
 
+  useEffect(() => {
+      const handleOpenAuth = () => setIsModalOpen(true);
+      window.addEventListener('openAuthModal', handleOpenAuth);
+      
+      return () => window.removeEventListener('openAuthModal', handleOpenAuth);
+    }, []);
+
   const handleSignOut = async () => {
     await signOut();
+    window.location.href = "/";
   };
 
   return (

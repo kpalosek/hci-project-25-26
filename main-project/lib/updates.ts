@@ -1,5 +1,3 @@
-// lib/updates.ts
-
 export type TransportType = "bus" | "train" | "taxi" | "uber" | "shuttle";
 
 export interface TransportUpdate {

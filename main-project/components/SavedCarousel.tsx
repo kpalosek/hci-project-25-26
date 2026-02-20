@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import { useSession } from "@/lib/auth-client";
 import { TransferGuide } from '@/lib/data';
-import GuideCard from './cards/GuideCard'; 
+import GuideCard from './cards/GuideCard';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   guides: TransferGuide[];
-  userFavorites?: { airportIata: string; targetCitySlug: string }[];
+  userFavorites?: { airportIata: string; targetCitySlug: string }[]; // <-- Added userFavorites
 }
 
-export default function FeaturedCarousel({ guides, userFavorites = [] }: Props) {
+export default function SavedCarousel({ guides, userFavorites = [] }: Props) {
 
   const { data: session } = useSession();
 
@@ -39,23 +39,22 @@ export default function FeaturedCarousel({ guides, userFavorites = [] }: Props) 
   const isPrevDisabled = startIndex === 0;
   const isNextDisabled = startIndex + itemsPerPage >= guides.length;
 
-  // Animacija za desktop
   const variants = {
     enter: (direction: number) => ({ x: direction > 0 ? 50 : -50, opacity: 0 }),
     center: { zIndex: 1, x: 0, opacity: 1 },
     exit: (direction: number) => ({ zIndex: 0, x: direction < 0 ? 50 : -50, opacity: 0 }),
   };
 
-return (
+  return (
     <div>
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
-            Featured Guides
+            Saved Guides
           </h2>
           <p className="text-gray-500 mt-1 text-sm md:text-base">
-            Check out some of the favourite guides from our community and find inspiration for your next trip!
+            Quickly access the airport transfers you've bookmarked for your upcoming trips.
           </p>
         </div>
 
@@ -95,10 +94,7 @@ return (
           );
 
           return (
-            <div 
-              key={guide.id} 
-              className="min-w-[85vw] sm:min-w-[300px] snap-center"
-            >
+            <div key={guide.id} className="min-w-[85vw] sm:min-w-[300px] snap-center">
               <GuideCard 
                 guide={guide} 
                 session={session} 

@@ -8,6 +8,7 @@ import {
   getCountryData, getCitiesByCountry,
   getCityData, getGuidesByTargetCity
 } from "@/lib/contentful";
+import { getUserFavorites } from "@/app/favoriteActions";
 
 interface PageProps {
   params: Promise<{ slug: string[] }>;
@@ -65,6 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DynamicExplorePage({ params }: PageProps) {
   const { slug } = await params;
+  const userFavorites = await getUserFavorites();
 
   // --- 1. RAZINA: KONTINENT (npr. /explore/europe) ---
   if (slug.length === 1) {
@@ -110,7 +112,7 @@ export default async function DynamicExplorePage({ params }: PageProps) {
         }
 
         const guides = await getGuidesByTargetCity(citySlug);
-        return <CityView city={city} guides={guides} />;
+        return <CityView city={city} guides={guides} userFavorites={userFavorites} />;
       }
 
   // Ako je URL predugačak

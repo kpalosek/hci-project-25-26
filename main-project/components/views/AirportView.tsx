@@ -1,3 +1,6 @@
+"use client"
+
+import { useSession } from "@/lib/auth-client";
 import Link from 'next/link';
 import { TransferGuide } from '@/lib/data'; 
 import GuideCard from "@/components/cards/GuideCard";
@@ -17,9 +20,12 @@ interface Airport {
 interface Props {
   airport: Airport;
   guides: TransferGuide[];
+  userFavorites?: { airportIata: string; targetCitySlug: string }[]; // <-- ADDED
 }
 
-export default function AirportView({ airport, guides }: Props) {
+export default function AirportView({ airport, guides, userFavorites = [] }: Props) { // <-- ADDED DEFAULT
+
+  const { data: session } = useSession();
 
   const continentSlug = airport.continentSlug || 'europe';
   const countrySlug = airport.countrySlug;
@@ -34,14 +40,26 @@ export default function AirportView({ airport, guides }: Props) {
       flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 -mx-4 px-4 scrollbar-hide
       md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 md:pb-0 md:mx-0 md:px-0 md:overflow-visible
     ">
-      {items.map((guide) => (
-        <div 
-          key={guide.id} 
-          className="min-w-[85vw] sm:min-w-[300px] snap-center md:min-w-0"
-        >
-          <GuideCard guide={guide} variant="city" />
-        </div>
-      ))}
+      {items.map((guide) => {
+        // <-- ADDED FAVORITE CHECK -->
+        const isFav = userFavorites?.some(
+          (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
+        );
+
+        return (
+          <div 
+            key={guide.id} 
+            className="min-w-[85vw] sm:min-w-[300px] snap-center md:min-w-0"
+          >
+            <GuideCard 
+              guide={guide} 
+              variant="city" 
+              session={session} 
+              initialIsFavorited={isFav} // <-- PASSED TO CARD
+            />
+          </div>
+        );
+      })}
     </div>
   );
 

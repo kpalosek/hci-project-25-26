@@ -49,3 +49,25 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at"),
   updatedAt: timestamp("updated_at"),
 });
+
+// 5. Tablica UPDATEOVA
+export const update = pgTable("update", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  text: text("text").notNull(),
+  type: text("type").notNull(),
+  airportCode: text("airport_code").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }), 
+    
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// 6. Tablica FAVORITES
+export const favorites = pgTable("favorites", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }), 
+  airportIata: text("airport_iata").notNull(),
+  targetCitySlug: text("target_city_slug").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

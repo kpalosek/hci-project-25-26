@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next"; //
 import { getAirportData, getGuidesByAirport } from "@/lib/contentful"; 
-import AirportView from "@/components/views/AirportView"; 
+import AirportView from "@/components/views/AirportView";
+import { getUserFavorites } from "@/app/favoriteActions";
 
 interface PageProps {
   params: Promise<{ airportCode: string }>;
@@ -28,8 +29,9 @@ export default async function AirportPage({ params }: PageProps) {
   const { airportCode } = await params;
   const airport = await getAirportData(airportCode);
   const availableGuides = await getGuidesByAirport(airportCode);
+  const userFavorites = await getUserFavorites();
 
   if (!airport) return notFound();
 
-  return <AirportView airport={airport} guides={availableGuides} />;
+  return <AirportView airport={airport} guides={availableGuides} userFavorites={userFavorites} />;
 }

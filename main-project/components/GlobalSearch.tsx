@@ -175,7 +175,7 @@ export default function GlobalSearch({
             {renderButton && (
                 <button
                     type="submit"
-                    className="bg-slate-900 text-white w-full md:w-auto px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors shadow-md uppercase tracking-wide font-semibold text-sm shrink-0"
+                    className="bg-slate-900 text-white w-full md:w-auto px-8 py-3 rounded-xl hover:bg-slate-800 transition-colors shadow-md tracking-wide font-semibold text-sm shrink-0"
                 >
                     Search
                 </button>
@@ -185,7 +185,7 @@ export default function GlobalSearch({
 
       {/* DROPDOWN REZULTATA */}
       {isOpen && !isLoading && (filteredCities.length > 0 || filteredAirports.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 text-left">
+        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[9999] animate-in fade-in zoom-in-95 duration-200 text-left">
            {/* GRADOVI */}
            {filteredCities.length > 0 && (
             <div className="py-2">

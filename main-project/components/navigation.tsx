@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Loader2 } from "lucide-react";
 import AuthModal from "@/components/auth/AuthModal";
 import { useSession, signOut } from "@/lib/auth-client";
 
@@ -61,7 +61,7 @@ export default function Navigation() {
     window.location.href = "/";
   };
 
-  return (
+return (
     <>
       <header className="bg-linear-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-md border-b border-white/10 shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -86,23 +86,42 @@ export default function Navigation() {
             </ul>
 
             {/* Auth Links (Desktop) */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-4">
               {isPending ? (
-                <div className="w-24 h-10 bg-white/10 animate-pulse rounded-lg border border-white/20" />
-              ) : session ? (
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 px-5 py-2 bg-white/10 backdrop-blur-sm text-white/90 rounded-lg hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/50 transition-all border border-white/20 uppercase tracking-wide text-sm font-medium"
-                >
-                  <LogOut className="w-4 h-4" />
-                  SIGN OUT
-                </button>
+                <div className="w-28 h-10 bg-white/10 rounded-xl animate-pulse flex items-center justify-center border border-white/20">
+                  <Loader2 className="w-4 h-4 text-white/50 animate-spin" />
+                </div>
+              ) : session?.user ? (
+                <div className="flex items-center gap-4">
+                  {/* User Card (Desktop) - Glassmorphism to blend naturally */}
+                  <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-800/60 border border-white/15 rounded-xl shadow-sm backdrop-blur-md">
+                    <div className="bg-slate-700/50 p-1.5 rounded-lg border border-white/10 shadow-inner">
+                      <User className="w-4 h-4 text-white/90" />
+                    </div>
+                    <span className="font-semibold text-sm text-white pr-2 max-w-[150px] truncate">
+                      {session.user.name || "User"}
+                    </span>
+                  </div>
+                  
+                  {/* Sign Out Button (Desktop) */}
+                  <button
+                    onClick={handleSignOut}
+                    className="flex items-center gap-1.5 text-sm font-bold text-white/60 hover:text-red-400 transition-colors uppercase tracking-wide px-2"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="hidden lg:inline-block">Sign Out</span>
+                  </button>
+                </div>
               ) : (
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="px-5 py-2 bg-white/15 backdrop-blur-sm text-white rounded-lg hover:bg-white/25 transition-all border border-white/20 uppercase tracking-wide text-sm font-medium"
+                  className="group flex items-center gap-2.5 px-5 py-2 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-xl transition-all duration-300 backdrop-blur-md text-white shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:shadow-[0_0_20px_rgba(255,255,255,0.08)]"
                 >
-                  SIGN IN
+                  <User className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" strokeWidth={2} />
+                  <span className="font-semibold text-sm tracking-wide">
+                    Sign In
+                  </span>
                 </button>
               )}
             </div>
@@ -111,7 +130,7 @@ export default function Navigation() {
             <button
               aria-label="Toggle navigation"
               onClick={() => setOpen(!open)}
-              className="md:hidden p-2 rounded-md text-white/80 hover:text-white hover:bg-white/10"
+              className="md:hidden p-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {open ? (
@@ -131,30 +150,48 @@ export default function Navigation() {
                   {pages.map((page, index) => processPage(page, index, currentPath, () => setOpen(false)))}
                 </ul>
 
-                {/* Mobile Auth Button */}
-                <div className="flex flex-col gap-2 pt-2 border-t border-white/10 mt-2">
+                {/* Auth Links (Mobile) */}
+                <div className="flex flex-col gap-3 pt-4 border-t border-white/10 mt-2">
                   {isPending ? (
-                    <div className="w-full h-12 bg-white/10 animate-pulse rounded-lg border border-white/20" />
-                  ) : session ? (
-                    <button
-                      onClick={() => {
-                        handleSignOut();
-                        setOpen(false);
-                      }}
-                      className="flex items-center gap-3 w-full px-4 py-3 bg-white/10 text-white rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors text-left border border-white/20 uppercase tracking-wide"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      SIGN OUT
-                    </button>
+                    <div className="w-full h-12 bg-white/10 animate-pulse rounded-xl border border-white/20 flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 text-white/50 animate-spin" />
+                    </div>
+                  ) : session?.user ? (
+                    <div className="flex flex-col gap-3">
+                      {/* User Card (Mobile) */}
+                      <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/60 rounded-xl border border-white/15 backdrop-blur-sm shadow-sm">
+                        <div className="bg-slate-700/50 p-2 rounded-lg border border-white/10">
+                          <User className="w-5 h-5 text-white/90" />
+                        </div>
+                        <span className="font-semibold text-white truncate">
+                          {session.user.name || "User"}
+                        </span>
+                      </div>
+                      
+                      {/* Sign Out Button (Mobile) */}
+                      <button
+                        onClick={() => {
+                          handleSignOut();
+                          setOpen(false);
+                        }}
+                        className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-500/10 text-red-400 rounded-xl hover:bg-red-500/20 transition-colors border border-red-500/20 uppercase tracking-wide font-bold text-sm"
+                      >
+                        <LogOut className="w-5 h-5" />
+                        SIGN OUT
+                      </button>
+                    </div>
                   ) : (
                     <button
                       onClick={() => {
                         setIsModalOpen(true);
                         setOpen(false);
                       }}
-                      className="block w-full px-4 py-3 bg-white/15 text-white rounded-lg hover:bg-white/25 transition-colors text-left border border-white/20 uppercase tracking-wide"
+                      className="group flex items-center justify-center gap-2 w-full px-5 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-xl transition-all duration-300 backdrop-blur-md text-white shadow-sm"
                     >
-                      SIGN IN
+                      <User className="w-5 h-5 text-white/60 group-hover:text-white transition-colors" strokeWidth={2} />
+                      <span className="font-semibold text-sm tracking-wide">
+                        Sign In
+                      </span>
                     </button>
                   )}
                 </div>

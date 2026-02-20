@@ -35,7 +35,7 @@ export default function NotFound() {
         <div className="mt-10">
           <Link
             href="/"
-            className="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-semibold rounded-2xl shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="inline-block px-8 py-4 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-2xl shadow-md transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
             aria-label="Return to home page"
           >
             Return Home

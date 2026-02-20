@@ -124,7 +124,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none text-black"
-                  placeholder="John Doe"
+                  placeholder="Your Username"
                 />
               </div>
             )}
@@ -194,7 +194,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 setIsLogin(!isLogin); 
                 resetForm(); 
               }}
-              className="text-blue-600 font-semibold hover:underline"
+              className="text-slate-800 font-semibold hover:underline"
             >
               {isLogin ? "Create one" : "Sign in"}
             </button>

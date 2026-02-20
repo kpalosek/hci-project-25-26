@@ -9,13 +9,13 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           {/* Brand */}
-          <div className="shrink-0 flex items-center self-center"> {/* Dodan 'self-center' */}
+          <div className="shrink-0 flex items-center self-center">
             <Link href="/" className="flex items-center">
               <Image
                 src="/air2city_logo_v2.png"
                 alt="air2city logo"
-                width={80} 
-                height={80}
+                width={100} 
+                height={100}
                 priority
               />
             </Link>

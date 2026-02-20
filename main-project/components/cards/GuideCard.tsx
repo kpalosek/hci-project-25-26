@@ -96,7 +96,7 @@ export default function GuideCard({ guide, variant = 'city', session, initialIsF
     <div className="relative block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full group border border-gray-100">
       
       {/* HEART FAVORITE BUTTON - Placed absolutely over the image */}
-      <div className="absolute top-3 left-3 z-20">
+      <div className="absolute top-3 left-3 z-10">
         <button
           onClick={handleFavoriteClick}
           disabled={isLoading}

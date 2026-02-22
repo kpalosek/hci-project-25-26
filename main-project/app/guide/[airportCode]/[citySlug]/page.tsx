@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTransferGuideFromCMS } from "@/lib/contentful"; 
-import { getUpdatesByAirport } from "@/lib/updates";
 import GuideHeader from "@/components/guide/GuideHeader";
 import TransportTabs from "@/components/guide/TransportTabs";
 
@@ -50,8 +49,6 @@ export default async function GuidePage({ params }: Props) {
   if (!guide) {
     return notFound();
   }
-
-  const updates = getUpdatesByAirport(airportCode);
 
   // Helperi za cijene i vrijeme
   const getPriceValue = (priceStr: string) => {

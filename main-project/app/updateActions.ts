@@ -8,7 +8,6 @@ import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 // 1. DOHVAĆANJE UPDATEOVA ZA ODREĐENI AERODROM
-// 1. DOHVAĆANJE UPDATEOVA ZA ODREĐENI AERODROM
 export async function getUpdatesForAirport(airportCode: string) {
   try {
     const airportUpdates = await db
@@ -35,7 +34,6 @@ export async function getUpdatesForAirport(airportCode: string) {
 // 2. OBJAVLJIVANJE NOVOG UPDATEA
 export async function postAirportUpdate(text: string, type: string, airportCode: string) {
   try {
-    // Provjera je li korisnik prijavljen (Sigurnost na serveru)
     const session = await auth.api.getSession({
       headers: await headers(), 
     });
@@ -44,7 +42,6 @@ export async function postAirportUpdate(text: string, type: string, airportCode:
       throw new Error("You have to be signed in to post an update.");
     }
 
-    // Spremanje u bazu
     await db.insert(update).values({
       text,
       type,
@@ -52,8 +49,6 @@ export async function postAirportUpdate(text: string, type: string, airportCode:
       userId: session.user.id,
     });
 
-    // Osvježi predmemoriju (cache) da se novi update odmah prikaže na UI-u!
-    // Prilagodi ovu putanju ovisno o tome kako ti izgleda URL aerodroma
     revalidatePath(`/guide`); 
 
     return { success: true };
@@ -63,20 +58,17 @@ export async function postAirportUpdate(text: string, type: string, airportCode:
   }
 }
 
-// import { update } from "@/db/schema"; // (Use whatever name you gave your table in schema.ts)
-
 export async function editAirportUpdate(id: string, text: string, type: string) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) return { success: false, error: "Unauthorized" };
 
-    // Update the record where the ID matches AND the user_id matches
-    await db.update(update) // <-- Change 'update' if you named the import differently in your schema
+    await db.update(update)
       .set({ text: text, type: type })
       .where(
         and(
           eq(update.id, id),
-          eq(update.userId, session.user.id) // Using your exact 'user_id' column
+          eq(update.userId, session.user.id)
         )
       );
 
@@ -92,12 +84,11 @@ export async function deleteAirportUpdate(id: string) {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session?.user) return { success: false, error: "Unauthorized" };
 
-    // Delete the record where the ID matches AND the user_id matches
-    await db.delete(update) // <-- Change 'update' if you named the import differently in your schema
+    await db.delete(update)
       .where(
         and(
           eq(update.id, id),
-          eq(update.userId, session.user.id) // Using your exact 'user_id' column
+          eq(update.userId, session.user.id)
         )
       );
 

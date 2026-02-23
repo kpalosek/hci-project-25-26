@@ -24,22 +24,21 @@ export default function UpdateModal({ isOpen, onClose, airportIata, onSuccess }:
     setLoading(true);
     setError("");
 
-    // Pozivamo backend akciju iz Faze 4
     const result = await postAirportUpdate(text, type, airportIata);
 
     setLoading(false);
 
     if (result.success) {
-      setText(""); // Očisti formu
-      onSuccess(); // Osvježi listu na ekranu
+      setText("");
+      onSuccess();
       onClose();
     } else {
-      setError(result.error || "Došlo je do greške pri objavi.");
+      setError(result.error || "An error occured.");
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6">
         <button onClick={onClose} className="absolute top-4 right-4 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition">
           <X className="w-5 h-5 text-gray-700" />
@@ -80,7 +79,7 @@ export default function UpdateModal({ isOpen, onClose, airportIata, onSuccess }:
           <button
             type="submit"
             disabled={loading || !text.trim()}
-            className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors flex justify-center items-center"
+            className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-colors flex justify-center items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-900"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Post Update"}
           </button>

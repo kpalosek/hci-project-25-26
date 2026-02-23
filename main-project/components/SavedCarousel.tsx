@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
   guides: TransferGuide[];
-  userFavorites?: { airportIata: string; targetCitySlug: string }[]; // <-- Added userFavorites
+  userFavorites?: { airportIata: string; targetCitySlug: string }[];
 }
 
 export default function SavedCarousel({ guides, userFavorites = [] }: Props) {
@@ -88,7 +88,6 @@ export default function SavedCarousel({ guides, userFavorites = [] }: Props) {
       {/* MOBILE LIST */}
       <div className="md:hidden flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory -mx-4 px-4 scrollbar-hide">
         {guides.map((guide) => {
-          // Check if this specific guide is in the user's favorites
           const isFav = userFavorites?.some(
             (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
           );
@@ -122,7 +121,6 @@ export default function SavedCarousel({ guides, userFavorites = [] }: Props) {
             className="grid grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {visibleGuides.map((guide) => {
-              // Same check for the desktop grid
               const isFav = userFavorites?.some(
                 (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
               );

@@ -37,7 +37,6 @@ export default function CityView({ city, guides, userFavorites = [] }: Props) { 
       md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 md:pb-0 md:mx-0 md:px-0 md:overflow-visible
     ">
       {items.map((guide) => {
-        // <-- ADDED FAVORITE CHECK -->
         const isFav = userFavorites?.some(
           (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
         );
@@ -51,7 +50,7 @@ export default function CityView({ city, guides, userFavorites = [] }: Props) { 
               guide={guide} 
               variant="city" 
               session={session} 
-              initialIsFavorited={isFav} // <-- PASSED TO CARD
+              initialIsFavorited={isFav}
             />
           </div>
         );

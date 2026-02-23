@@ -60,7 +60,6 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-100 flex items-center justify-center">
-              {/* Replace with a nice illustration or keep the logo */}
               <Image 
                 src="/air2city_logo_v2.png" 
                 alt="air2city logo" 

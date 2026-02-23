@@ -11,5 +11,4 @@ export const auth = betterAuth({
   emailAndPassword: {  
     enabled: true,
   },
-  // Ovdje bismo dodali Google, ali za sada ostajemo samo na emailu
 });

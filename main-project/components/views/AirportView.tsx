@@ -41,7 +41,6 @@ export default function AirportView({ airport, guides, userFavorites = [] }: Pro
       md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6 md:pb-0 md:mx-0 md:px-0 md:overflow-visible
     ">
       {items.map((guide) => {
-        // <-- ADDED FAVORITE CHECK -->
         const isFav = userFavorites?.some(
           (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
         );
@@ -55,7 +54,7 @@ export default function AirportView({ airport, guides, userFavorites = [] }: Pro
               guide={guide} 
               variant="city" 
               session={session} 
-              initialIsFavorited={isFav} // <-- PASSED TO CARD
+              initialIsFavorited={isFav}
             />
           </div>
         );
@@ -68,13 +67,6 @@ export default function AirportView({ airport, guides, userFavorites = [] }: Pro
       
       {/* HEADER */}
       <div className="mb-10">
-        <Link 
-          // Link na Explore stranicu države
-          href={`/explore/${continentSlug}/${countrySlug}`}
-          className="text-sm font-medium text-gray-500 hover:text-blue-600 mb-4 inline-flex items-center transition-colors"
-        >
-          &larr; Back to {countryName}
-        </Link>
         
         <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-3 tracking-tight">
           Transfers from {airport.name} ({airport.iata})

@@ -32,24 +32,20 @@ export default function GuideCard({ guide, variant = 'city', session, initialIsF
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevents the click from triggering the Link wrapper
+    e.preventDefault();
     
     if (!session) {
       window.dispatchEvent(new Event("openAuthModal"));
       return;
     }
 
-    // Optimistic UI update
     setIsFavorited(!isFavorited); 
     
-    // Database update
     await toggleFavorite(guide.airportIata, guide.targetCitySlug, pathname);
     
-    // Force Next.js to refresh server components (instantly updates Saved Guides carousel)
     router.refresh();
   };
 
-  // --- IMAGE & DATA FORMATTING ---
   let imageUrl = guide.image;
   if (!imageUrl) {
     if (variant === 'airport') {
@@ -95,7 +91,6 @@ export default function GuideCard({ guide, variant = 'city', session, initialIsF
   return (
     <div className="relative block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full group border border-gray-100">
       
-      {/* HEART FAVORITE BUTTON - Placed absolutely over the image */}
       <div className="absolute top-3 left-3 z-10">
         <button
           onClick={handleFavoriteClick}
@@ -142,7 +137,6 @@ export default function GuideCard({ guide, variant = 'city', session, initialIsF
               <Plane className="h-3.5 w-3.5" />
               <span>Transfer to {cityName} Center</span>
             </div>
-            {/* Added line-clamp-2 to keep height consistent */}
             <h3 className="text-gray-900 font-bold text-lg leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
               {airportName}
             </h3>
@@ -160,7 +154,7 @@ export default function GuideCard({ guide, variant = 'city', session, initialIsF
             </div>
           </div>
 
-          {/* Badgevi za tipove prijevoza - mt-auto keeps them anchored to the bottom */}
+          {/* Badgevi za tipove prijevoza  */}
           <div className="flex flex-wrap gap-2 mt-auto">
             {distinctModes.map((mode) => (
               <span 

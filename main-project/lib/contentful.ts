@@ -82,14 +82,12 @@ export async function getContinentData(slug: string) {
 }
 
 export async function getCountriesByContinent(continentSlug: string) {
-  // Dohvaćamo sve države
   const response = await client.getEntries({
     content_type: 'country',
     order: ['fields.name'],
     include: 2, 
   });
 
-  // Ručno filtriramo u kodu
   const filteredItems = response.items.filter((item: any) => 
     item.fields.parentContinent?.fields?.slug === continentSlug
   );
@@ -131,7 +129,7 @@ export async function getCitiesByCountry(countrySlug: string) {
   });
 
   if (countryResponse.items.length === 0) {
-    console.error(`❌ Država '${countrySlug}' nije pronađena.`);
+    console.error(`❌ Country '${countrySlug}' not found.`);
     return [];
   }
 
@@ -165,7 +163,6 @@ export async function getAirportData(iata: string) {
   if (response.items.length === 0) return null;
   const fields: any = response.items[0].fields;
 
-  // Izvlačimo povezane podatke
   const cityFields = fields.city?.fields;
   const countryFields = cityFields?.parentCountry?.fields;
   const continentFields = countryFields?.parentContinent?.fields;
@@ -175,8 +172,6 @@ export async function getAirportData(iata: string) {
     name: fields.name,
     iata: fields.iata,
     image: getImageUrl(fields.image),
-    
-    // Podaci o lokaciji (Direktno izvučeni ovdje, da ne moramo tražiti u View-u)
     locationCitySlug: cityFields?.slug,
     locationCityName: cityFields?.name,
     countrySlug: countryFields?.slug,
@@ -205,18 +200,13 @@ export async function getCityData(slug: string) {
     slug: fields.slug,
     image: getImageUrl(fields.image),
     description: fields.description,
-    
-    // Čitamo slug roditelja (države)
     parentCountry: countryField?.fields?.slug, 
-    
-    // Dodatni podaci
     countryName: countryField?.fields?.name,
     continentSlug: countryField?.fields?.parentContinent?.fields?.slug,
   };
 }
 
 export async function getTransferGuideFromCMS(airportIata: string, citySlug: string): Promise<TransferGuide | null> {
-  console.log(`🔍 CMS Fetch: ${airportIata} -> ${citySlug}`);
 
   try {
     // 1. DOHVAT SVIH VODIČA
@@ -237,13 +227,11 @@ export async function getTransferGuideFromCMS(airportIata: string, citySlug: str
     });
 
     if (!foundItem) {
-      console.log("⚠️ Vodič nije pronađen.");
+      console.log("⚠️ Guide not found.");
       return null;
     }
 
     const fields: any = foundItem.fields;
-
-    // Dohvat hijerarhije za navigaciju (ako postoji)
     const cityObj = fields.targetCity?.fields;
     const countryObj = cityObj?.parentCountry?.fields;
     const continentObj = countryObj?.parentContinent?.fields;
@@ -257,17 +245,12 @@ export async function getTransferGuideFromCMS(airportIata: string, citySlug: str
       type: fields.type,
       distance: fields.distance,
       isFeatured: fields.isFeatured || false,
-      
-      // --- NOVI PODACI (METADATA) ---
       airportName: fields.airport?.fields?.name,
       airportImage: getImageUrl(fields.airport?.fields?.image),
-      
       cityName: fields.targetCity?.fields?.name,
-      cityImage: getImageUrl(fields.targetCity?.fields?.image),
-      
+      cityImage: getImageUrl(fields.targetCity?.fields?.image),   
       countryName: countryObj?.name,
       countrySlug: countryObj?.slug,
-      
       continentSlug: continentObj?.slug,
 
       // Transport Opcije
@@ -364,8 +347,6 @@ export async function getGuidesByTargetCity(citySlug: string) {
 }
 
 export async function getSearchData() {
-  console.log("🔍 Fetching Search Data...");
-
   // 1. DOHVATI SVE GRADOVE
   const citiesRes = await client.getEntries({
     content_type: 'city',
@@ -378,8 +359,8 @@ export async function getSearchData() {
     const countryObj = fields.parentCountry;
     const continentObj = countryObj?.fields?.parentContinent;
 
-    if (!countryObj) console.warn(`⚠️ Grad '${fields.name}' nema povezanu državu (parentCountry)!`);
-    if (countryObj && !continentObj) console.warn(`⚠️ Država '${countryObj.fields.name}' nema povezan kontinent (parentContinent)!`);
+    if (!countryObj) console.warn(`⚠️ City '${fields.name}' has no connected country (parentCountry)!`);
+    if (countryObj && !continentObj) console.warn(`⚠️ Country '${countryObj.fields.name}' has no connected continent (parentContinent)!`);
 
     return {
       name: fields.name,
@@ -425,7 +406,6 @@ export async function getGuidesByFavorites(favoritesList: { airportIata: string,
     const guideIata = item.fields.airport?.fields?.iata;
     const guideSlug = item.fields.targetCity?.fields?.slug;
     
-    // Check if the current Contentful item matches BOTH the IATA and the SLUG of any saved favorite
     return favoritesList.some(fav => 
       fav.airportIata === guideIata && fav.targetCitySlug === guideSlug
     );

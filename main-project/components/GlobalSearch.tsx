@@ -185,7 +185,7 @@ export default function GlobalSearch({
 
       {/* DROPDOWN REZULTATA */}
       {isOpen && !isLoading && (filteredCities.length > 0 || filteredAirports.length > 0) && (
-        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[9999] animate-in fade-in zoom-in-95 duration-200 text-left">
+        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-9999 animate-in fade-in zoom-in-95 duration-200 text-left">
            {/* GRADOVI */}
            {filteredCities.length > 0 && (
             <div className="py-2">

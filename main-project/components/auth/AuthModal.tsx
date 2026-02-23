@@ -31,11 +31,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   useEffect(() => {
     if (!isOpen) {
-      // Kada se modal zatvori, resetiraj sve na početne postavke
       resetForm();
       setIsLogin(true);
       setShowPassword(false);
-      setLoading(false); // Za svaki slučaj resetiramo i loading stanje
+      setLoading(false);
     }
   }, [isOpen]);
 
@@ -44,7 +43,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Ako se već učitava, spriječi ponovno slanje
     if (loading) return;
     
     setLoading(true);
@@ -69,7 +67,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (error) throw new Error(error.message || "Failed to sign in. Please check your credentials.");
         
         onClose(); 
-        // OVO RJEŠAVA PROBLEM: Forsirani refresh kako bi Next.js povukao "Saved Guides"
         window.location.reload(); 
         
       } else {
@@ -78,17 +75,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         if (error) throw new Error(error.message || "Failed to sign up.");
         
         onClose(); 
-        // OVO RJEŠAVA PROBLEM: Forsirani refresh nakon uspješne registracije
         window.location.reload(); 
       }
     } catch (err: any) {
       setError(err.message);
-      setLoading(false); // Gasimo loading samo ako dođe do greške (ako prođe, stranica se ionako refresha)
+      setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative flex w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden min-h-[550px]">
         
         <button 
@@ -189,7 +185,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <div className="mt-6 text-center text-sm text-gray-600">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
             <button 
-              type="button" // Spriječava da se ovo okine kao submit forme
+              type="button"
               onClick={() => { 
                 setIsLogin(!isLogin); 
                 resetForm(); 
@@ -210,7 +206,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-12">
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent flex items-end p-12">
             <h3 className="text-white text-2xl font-bold">
               Find the fastest routes from your airport to the city.
             </h3>

@@ -35,20 +35,19 @@ export default function GuideHeader({
     ? `/explore/${continentSlug}/${countrySlug}/${citySlug}`
     : "#";
 
-  return (
-    <div className="relative w-full h-[400px] bg-gray-900 flex justify-center z-0">
+return (
+    <div className="relative w-full h-[250px] md:h-[400px] bg-gray-900 flex justify-center z-0">
       <div className="absolute inset-0 w-full h-full overflow-hidden flex justify-center">
-        <div className="relative w-full max-w-[1920px] h-full flex shadow-2xl">
-          
-          {/* --- LIJEVA STRANA: AERODROM --- */}
-          <div className="relative w-1/2 h-full border-r-4 border-white/20 group/left">
+        <div className="relative w-full max-w-[1920px] h-full shadow-2xl">
+        
+          <div className="absolute left-0 top-0 w-[55%] h-full z-10 [clip-path:polygon(0_0,100%_0,85%_100%,0_100%)] group/left">
             {airportImage ? (
               <>
                 <Image
                   src={airportImage}
                   alt={airportName}
                   fill
-                  className="object-cover opacity-90 transition-transform duration-700" // Bez hover efekta na sliku
+                  className="object-cover opacity-90 transition-transform duration-700" 
                   priority
                 />
                 <div className="absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-gray-900 via-gray-900/50 to-transparent z-10" />
@@ -59,7 +58,7 @@ export default function GuideHeader({
 
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/30" />
 
-            {/* BADGE (Lijevi) - Link na Airport Overview */}
+            {/* BADGE (Left) */}
             <Link
               href={`/guide/${airportIata}`}
               className="absolute top-6 left-4 md:top-8 md:left-8 z-20 group"
@@ -75,15 +74,14 @@ export default function GuideHeader({
             </Link>
           </div>
 
-          {/* --- DESNA STRANA: GRAD --- */}
-          <div className="relative w-1/2 h-full group/right">
+          <div className="absolute right-0 top-0 w-[55%] h-full z-0 group/right">
             {cityImage ? (
               <>
                 <Image
                   src={cityImage}
                   alt={cityName}
                   fill
-                  className="object-cover opacity-90 transition-transform duration-700" // Bez hover efekta na sliku
+                  className="object-cover opacity-90 transition-transform duration-700" 
                   priority
                 />
                 <div className="absolute inset-y-0 right-0 w-1/3 bg-linear-to-l from-gray-900 via-gray-900/50 to-transparent z-10" />
@@ -94,7 +92,7 @@ export default function GuideHeader({
 
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/30" />
 
-            {/* BADGE (Desni) - Link na City Overview */}
+            {/* BADGE (Right) */}
             <Link
               href={cityUrl}
               className="absolute top-6 right-4 md:top-8 md:left-8 z-20 group text-right"

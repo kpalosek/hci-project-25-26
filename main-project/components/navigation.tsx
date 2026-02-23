@@ -93,7 +93,7 @@ return (
                 </div>
               ) : session?.user ? (
                 <div className="flex items-center gap-4">
-                  {/* User Card (Desktop) - Glassmorphism to blend naturally */}
+                  {/* User Card (Desktop) */}
                   <div className="flex items-center gap-2.5 px-3 py-1.5 bg-slate-800/60 border border-white/15 rounded-xl shadow-sm backdrop-blur-md">
                     <div className="bg-slate-700/50 p-1.5 rounded-lg border border-white/10 shadow-inner">
                       <User className="w-4 h-4 text-white/90" />

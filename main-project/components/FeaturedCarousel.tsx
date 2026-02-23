@@ -89,7 +89,6 @@ return (
       {/* MOBILE LIST */}
       <div className="md:hidden flex overflow-x-auto gap-4 pb-6 snap-x snap-mandatory -mx-4 px-4 scrollbar-hide">
         {guides.map((guide) => {
-          // Check if this specific guide is in the user's favorites
           const isFav = userFavorites?.some(
             (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
           );
@@ -126,7 +125,6 @@ return (
             className="grid grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {visibleGuides.map((guide) => {
-              // Same check for the desktop grid
               const isFav = userFavorites?.some(
                 (fav) => fav.airportIata === guide.airportIata && fav.targetCitySlug === guide.targetCitySlug
               );

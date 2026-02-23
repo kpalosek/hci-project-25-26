@@ -91,7 +91,6 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
     fetchUpdates();
   }, [airportIata]);
 
-  // LOGIKA KLIKA NA GUMB ZA OBJAVU
   const handlePostClick = () => {
       if (session) {
         setIsUpdateModalOpen(true);
@@ -104,7 +103,6 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
   const handleUpdateSuccess = (action: 'create' | 'edit' | 'delete') => {
     fetchUpdates(); 
     
-    // Set the specific message based on what the user did
     if (action === 'delete') setToastMessage("Update successfully deleted!");
     else if (action === 'edit') setToastMessage("Update successfully saved!");
     else setToastMessage("Update successfully posted!");
@@ -119,7 +117,7 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
       <div className="grid lg:grid-cols-3 gap-8">
         
         {/* --- LIJEVI STUPAC (Glavni sadržaj) --- */}
-        <div className="lg:col-span-2 flex flex-col gap-6 min-w-0 w-full">
+        <div className="lg:col-span-2 flex flex-col gap-4 min-w-0 w-full">
           <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide w-full">
             {options.map((option) => {
               const Icon = iconMap[option.type] || Bus;
@@ -127,27 +125,30 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
               const activeStyle = typeColors[option.type] || "border-blue-600 bg-blue-50 text-blue-700";
 
               return (
-                <button
-                  key={option.id}
-                  onClick={() => setActiveTabId(option.id)}
-                  className={`
-                    flex items-center gap-3 px-6 py-4 min-w-40 rounded-t-lg transition-all shadow-sm border-b-4 bg-white
-                    ${isActive ? `${activeStyle} font-bold shadow-md transform -translate-y-1` : 'text-gray-500 border-transparent hover:bg-gray-50'}
-                  `}
-                >
-                  <Icon className={`w-6 h-6 ${isActive ? '' : 'text-gray-400'}`} />
-                  <span className="text-lg capitalize">{option.type}</span>
-                </button>
+              <button
+                key={option.id}
+                onClick={() => setActiveTabId(option.id)}
+                className={`
+                  flex items-center gap-2 md:gap-3 
+                  px-4 py-3 md:px-6 md:py-4 
+                  min-w-28 md:min-w-40 
+                  rounded-t-lg transition-all shadow-sm border-b-4 bg-white
+                  ${isActive ? `${activeStyle} font-bold shadow-md transform -translate-y-1` : 'text-gray-500 border-transparent hover:bg-gray-50'}
+                `}
+              >
+                <Icon className={`w-5 h-5 md:w-6 md:h-6 ${isActive ? '' : 'text-gray-400'}`} />
+                <span className="text-sm md:text-lg capitalize">{option.type}</span>
+              </button>
               );
             })}
           </div>
 
           <div className="bg-white rounded-b-2xl rounded-tr-2xl shadow-xl min-h-[400px] p-6 md:p-10 border border-gray-100">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8">
+            <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-8">
               <span className="capitalize">{activeOption.type}</span> guide from {airportName} to {cityName}
             </h1>
-            <div className="space-y-8">
-              <div className="prose prose-lg text-gray-600">
+            <div className="space-y-6 md:space-y-8">
+              <div className="prose prose-slate prose-p:text-gray-600 prose-headings:text-gray-900 md:prose-lg max-w-none">
                 <ReactMarkdown>{activeOption.description}</ReactMarkdown>
               </div>
               <div className="grid sm:grid-cols-2 gap-6">
@@ -184,7 +185,7 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
 
         {/* --- DESNI STUPAC (UPDATEOVI IZ BAZE) --- */}
         <div className="lg:col-span-1 min-w-0">
-          <div className="sticky top-24 space-y-6 mt-24">
+          <div className="sticky top-24 space-y-6 mt-22">
             <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden flex flex-col max-h-[600px]">
               
               {/* Header */}
@@ -226,7 +227,7 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
                             </button>
 
                             {openMenuId === update.id && (
-                              <div className="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-[60]">
+                              <div className="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-60">
                                 {isAuthor && (
                                   <button
                                     onClick={() => {
@@ -321,26 +322,26 @@ export default function TransportTabs({ airportName, airportIata, cityName, opti
       />
 
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-[110] bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-6 right-6 z-110 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
           <Check className="w-5 h-5 text-green-400" />
           <span className="font-medium text-sm">{toastMessage}</span>
         </div>
       )}
 
       {showReportToast && (
-        <div className="fixed bottom-6 right-6 z-[110] bg-gray-900 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-6 right-6 z-110 bg-gray-900 text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
           <Flag className="w-5 h-5 text-red-400" />
           <span className="font-medium text-sm">Post reported. Our team will review it.</span>
         </div>
       )}
 
       {postToReport && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
           <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 text-center animate-in fade-in zoom-in-95 duration-200">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Flag className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Report Post?</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Report this Post?</h2>
             <p className="text-sm text-gray-500 mb-6">
               Are you sure you want to report this update? Our moderation team will review it.
             </p>

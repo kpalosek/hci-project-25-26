@@ -14,7 +14,6 @@ export async function toggleFavorite(airportIata: string, targetCitySlug: string
 
     const userId = session.user.id;
 
-    // Check if THIS SPECIFIC guide is already favorited
     const existing = await db.select().from(favorites).where(
       and(
         eq(favorites.userId, userId),

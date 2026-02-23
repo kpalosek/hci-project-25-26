@@ -8,7 +8,7 @@ interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
   post: any; 
-  onSuccess: (action: 'edit' | 'delete') => void; // <-- Updated to accept action type
+  onSuccess: (action: 'edit' | 'delete') => void;
 }
 
 export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: EditModalProps) {
@@ -18,15 +18,13 @@ export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: Ed
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
-  
-  // NEW: State to control the delete confirmation screen
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (post) {
       setText(post.text || "");
       setType(post.type || "bus");
-      setShowConfirmDelete(false); // Reset confirmation screen when opening
+      setShowConfirmDelete(false);
     }
   }, [post]);
 
@@ -42,7 +40,7 @@ export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: Ed
     setIsSaving(false);
 
     if (result.success) {
-      onSuccess('edit'); // Tell the parent it was an edit
+      onSuccess('edit');
     } else {
       setError(result.error || "Failed to update the post.");
     }
@@ -57,15 +55,15 @@ export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: Ed
     setIsDeleting(false);
 
     if (result.success) {
-      onSuccess('delete'); // Tell the parent it was a delete
+      onSuccess('delete');
     } else {
       setError(result.error || "Failed to delete the post.");
-      setShowConfirmDelete(false); // Go back to edit screen if it fails
+      setShowConfirmDelete(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 overflow-hidden">
         
         <button 
@@ -82,7 +80,7 @@ export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: Ed
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Delete this update?</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Delete this Post?</h2>
             <p className="text-sm text-gray-500 mb-8 max-w-sm mx-auto">
               This action cannot be undone. Are you sure you want to permanently remove this post?
             </p>
@@ -143,7 +141,7 @@ export default function EditUpdateModal({ isOpen, onClose, post, onSuccess }: Ed
               <div className="flex items-center justify-between pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowConfirmDelete(true)} // Show confirmation instead of window.confirm
+                  onClick={() => setShowConfirmDelete(true)}
                   className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg font-medium transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />

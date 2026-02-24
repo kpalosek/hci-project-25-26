@@ -29,8 +29,8 @@ return (
           <div>
             <h3 className="text-white mb-4 uppercase tracking-wider text-sm font-semibold">Quick Links</h3>
             <ul className="space-y-3">
-              <li><a href="/explore" className="text-gray-400 hover:text-white transition-colors text-sm">Explore Airports</a></li>
-              <li><a href="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About air2city</a></li>
+              <li><a href="/explore" className="text-gray-400 hover:text-white transition-colors text-sm">Explore</a></li>
+              <li><a href="/about" className="text-gray-400 hover:text-white transition-colors text-sm">About</a></li>
             </ul>
           </div>
 

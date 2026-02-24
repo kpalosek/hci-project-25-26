@@ -31,7 +31,7 @@ export default function GlobalSearch({
   className = "w-full max-w-3xl",
   inputClassName = "",
   hideIcon = false,
-  placeholder = "Enter airport or destination...",
+  placeholder = "Enter airport or city...",
   renderButton = false 
 }: Props) {
   const router = useRouter();
